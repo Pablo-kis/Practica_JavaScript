@@ -1,0 +1,90 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<script>
+
+function marcar (id) {
+    //esta funcion oscurece el campo que ha fallado y le da el foco
+    document.getElementById(id).style.backgroundColor="#d4d4d4";
+    document.getElementById(id).focus();
+}
+function blank() {
+    //se llama al inicio de validar para poner en blanco todos los errores anteriores Y en reset para que se limpien
+   // var campos=document.mi_form.childNodes;
+    var campos=document.mi_form.getElementsByTagName("input");
+    var i;
+    for (i=0;i<campos.length;i++) {
+       if (campos[i].type=="text")
+            campos[i].style="background-Color:white";
+    }
+   // document.mi_form.cp.style.backgroundColor="white";
+   // document.mi_form.edad.style.backgroundColor="white";
+   // document.mi_form.dni.style.backgroundColor="white";
+   // document.mi_form.email.style.backgroundColor="white";
+   // document.mi_form.error.style.backgroundColor="white";
+}
+function mensajerror (mensaje) {
+    //si se ha puesto invisible se hace con .style.visibility=visible
+    document.mi_form.error.value=mensaje;
+    document.mi_form.error.hidden=document.mi_form.error.visible;
+}
+function validar() { //preguntar si se cumple lo que NO se tiene que cumplir
+    blank();
+    if (document.mi_form.nombre.value=="" || document.mi_form.direccion.value=="" || document.mi_form.localidad.value=="" || document.mi_form.cp.value=="" || document.mi_form.edad.value=="" || document.mi_form.dni.value=="" ) {
+        mensajerror("No puede haber campos en blanco en el formulario");
+        return false;
+    }
+    //Se puede poner la edad en una variable nueva y así se lee mejor
+    if (isNaN(document.mi_form.edad.value) || document.mi_form.edad.value<18 ||document.mi_form.edad.value>95) {
+        mensajerror("El campo edad debe ser un número entre 18 y 95 años");
+        marcar(document.mi_form.edad.id);
+        return false;
+    }
+    if (isNaN(document.mi_form.cp.value) || document.mi_form.cp.value.length!=5 || !/^[0-5][0-9]{4}$/.test(document.mi_form.cp.value)) {
+        mensajerror("El código postal debe ser un número de 5 dígitos");
+        marcar(document.mi_form.cp.id);
+        return false;
+    }
+    //podemos asignar una variable a una expresión regular
+    if (/^[A-Z|0-9][0-9]{7}[A-Z]$/.test(document.mi_form.dni.value)==false) {
+        mensajerror("El DNI/NIE es incorrecto");
+        marcar(document.mi_form.dni.id);
+        return false;
+    }
+    //Para ahorrar el ==false, podemos poner ! por delante para negarlo.
+    if (document.mi_form.email.value!="" && !/^[A-Z|0-9|a-z|.|_|-]+@[0-9|A-Z|a-z]+\.[a-z]{2,3}$/.test(document.mi_form.email.value)) {
+        mensajerror("El e-mail no es válido");
+        marcar(document.mi_form.email.id);
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
+</script>
+</head>
+<body>
+<form name="mi_form" onSubmit="return validar()" action="programa.php">
+<label>Nombre:</label>
+<input type="text" name="nombre" size=40>
+<br>
+<label>Dirección:</label>
+<input type="text" name="direccion" size=40> <br>
+<label>Localidad:</label>
+<input type="text" name="localidad" size=20>
+<br>
+<label>Código Postal:</label>
+<input type="text" name="cp" size=5 id="cp"><br>
+<label>Edad</label>
+<input type="text" name="edad" size=2 id="edad"><br>
+<label>DNI o NIE:</label>
+<input type="text" name="dni" size=20 id="dni"><br>
+<label>E-mail:</label>
+<input type="text" name="email" size=20 id="email">
+<br>
+<input type="text" name="error" size=50 hidden style="border-width:0px;color:red;" disabled="true"><br>
+<input type="submit" value="enviar" >
+<input type="reset" value="limpiar" onclick="blank();">
+</form>
+</boby></html>
